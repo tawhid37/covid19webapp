@@ -19,12 +19,18 @@ Route::get('/', function () {
 });
 
 Route::get('/logout', function () {
-    session()->forget('data');
-    return view('welcome');
+    session()->invalidate();
+    session()->regenerateToken();
+    return redirect('/');
 });
 
 Route::get('/adminpass', [CovidController::class, 'adminpass']);
 Route::post('/adminpass', [CovidController::class, 'adminenter']);
+
+Route::middleware('admin')->group(function () {
+    Route::get('/adminshow', [CovidController::class, 'adminshow']);
+});
+
 Route::get('/assessment', [CovidController::class, 'assessmentform']);
 Route::post('/assessment', [CovidController::class, 'store1']);
 Route::post('/assessment1', [CovidController::class, 'store2']);
