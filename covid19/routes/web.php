@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CovidController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,15 +19,13 @@ Route::get('/', function () {
 });
 
 Route::get('/logout', function () {
-	session()->forget('data');
+    session()->forget('data');
     return view('welcome');
 });
 
-Route::get('/adminpass', 'CovidController@adminpass');
-Route::post('/adminpass', 'CovidController@adminenter');
-Route::get('/assessment', 'CovidController@assessmentform');
-Route::post('/assessment', 'CovidController@store1');
-Route::post('/assessment1', 'CovidController@store2');
-Route::post('/assessment2', 'CovidController@finalResult');
-
-//Route::get('/pizzas/create','PizzaController@create');
+Route::get('/adminpass', [CovidController::class, 'adminpass']);
+Route::post('/adminpass', [CovidController::class, 'adminenter']);
+Route::get('/assessment', [CovidController::class, 'assessmentform']);
+Route::post('/assessment', [CovidController::class, 'store1']);
+Route::post('/assessment1', [CovidController::class, 'store2']);
+Route::post('/assessment2', [CovidController::class, 'finalResult']);

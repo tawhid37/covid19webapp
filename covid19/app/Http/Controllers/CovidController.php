@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Covid ;
+use App\Covid;
+use App\Http\Requests\StoreAssessmentRequest;
+use App\Http\Requests\StoreSymptomsRequest;
+use App\Http\Requests\StoreAdditionalSymptomsRequest;
 
 
 
@@ -41,13 +44,12 @@ class CovidController extends Controller
     
         return view('assessmentform');
       }
-
-       public function store1() {
+       public function store1(StoreAssessmentRequest $request) {
         $info =[      
-          'Name' => request('name'),
-          'Age' => request('age'),
-          'Gender' => request('sex'),
-          'Body_temperature' => request("bodytemp")
+          'Name' => $request->input('name'),
+          'Age' => $request->input('age'),
+          'Gender' => $request->input('sex'),
+          'Body_temperature' => $request->input('bodytemp')
       ];
 
      // return $info;
@@ -58,15 +60,15 @@ class CovidController extends Controller
       
       }
 
-      public function store2() {
+      public function store2(StoreSymptomsRequest $request) {
         
 
       $info2 =[      
-          'Name' => request('name'),
-          'Age' => request('age'),
-          'Gender' => request('sex'),
-          'Body_temperature' => request("bodytemp"),
-		  'Symptoms'=>request("symptoms")
+          'Name' => $request->input('name'),
+          'Age' => $request->input('age'),
+          'Gender' => $request->input('sex'),
+          'Body_temperature' => $request->input('bodytemp'),
+		  'Symptoms' => $request->input('symptoms')
       ];
 
      //return $info2;
@@ -76,16 +78,15 @@ class CovidController extends Controller
       
       }
 
-       public function finalResult() 
+       public function finalResult(StoreAdditionalSymptomsRequest $request) 
        {
        	  $counter=0;
          
-          $Body_temperature = request("bodytemp");
+          $Body_temperature = $request->input('bodytemp');
 		  
 
-
 		  $design_id = 'NoneofThese';
-		  $Symptoms= request('symptoms');
+		  $Symptoms = $request->input('symptoms');
 
 			if(in_array($design_id, $Symptoms) and count($Symptoms)==1)
 			{
@@ -100,7 +101,7 @@ class CovidController extends Controller
 
     			}
      		else {
-     			$Symptoms = request('symptoms');
+     			$Symptoms = $request->input('symptoms');
      			if (count($Symptoms)== 1 and !in_array($design_id, $Symptoms) ) {
     			$counter = $counter+3;
     			
@@ -108,7 +109,7 @@ class CovidController extends Controller
     		}}
 
     	  $design_id = 'NoneofThese';
-		  $ASymptoms= request('asymptoms');
+		  $ASymptoms = $request->input('asymptoms');
 
 		  if(in_array($design_id, $ASymptoms) and count($ASymptoms)==1)
 			{
@@ -122,7 +123,7 @@ class CovidController extends Controller
 			  
 			}
      	   else {
-     			$ASymptoms = request('asymptoms');
+     			$ASymptoms = $request->input('asymptoms');
     			$counter = $counter+(count($ASymptoms)*2);
 
 
@@ -134,10 +135,10 @@ class CovidController extends Controller
 
         $last_info=[
     	  'total_count' => $counter,
-    	  'Name' => request('name'),
-          'Age' => request('age'),
-          'Gender' => request('sex'),
-          'Body_temperature' => request("bodytemp")
+    	  'Name' => $request->input('name'),
+          'Age' => $request->input('age'),
+          'Gender' => $request->input('sex'),
+          'Body_temperature' => $request->input('bodytemp')
 
     	]; 
 
@@ -147,10 +148,10 @@ class CovidController extends Controller
 
     	  $covid = new Covid();
       
-          $covid->Name = request('name');
-          $covid->Age = request('age');
-          $covid->SEX =  request('sex');
-          $covid->Temperature =  request('bodytemp');
+          $covid->Name = $request->input('name');
+          $covid->Age = $request->input('age');
+          $covid->SEX =  $request->input('sex');
+          $covid->Temperature =  $request->input('bodytemp');
           $covid->Score = $counter;
           $covid->Result = $text;
           //return request('toppings');
