@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Covid;
 use App\Http\Requests\StoreAssessmentRequest;
@@ -17,24 +18,29 @@ class CovidController extends Controller
 
 	public function adminpass() {
        
-    
+        if (session()->has('admin_authenticated')) {
+            return redirect('/adminshow');
+        }
+
         return view('adminpass');
       }
 
       public function adminenter(Request $req) {
+        $passwordHash = config('covid19.admin_password_hash');
 
-      	if (md5(request('pass'))=="21232f297a57a5a743894a0e4a801fc3"){
-      		$req->session()->put('data',md5(request('pass')));
+        if (Hash::check($req->input('pass'), $passwordHash)) {
+            $req->session()->put('admin_authenticated', true);
 
-      		$covid = Covid::select("id",'Name', 'Age','SEX', 'Temperature','Score','Result','created_at')->get(); 
-        	return view('adminshow', ['covid' => $covid]);
+            return redirect('/adminshow');
+        }
 
-      	}
-      	else{
-      		return redirect('/adminpass')->with('mssg', 'Password is not Correct');
-      	}
-        
-    
+        return redirect('/adminpass')->with('mssg', 'Password is not Correct');
+      }
+
+      public function adminshow() {
+        $covid = Covid::select("id", 'Name', 'Age', 'SEX', 'Temperature', 'Score', 'Result', 'created_at')->get();
+
+        return view('adminshow', ['covid' => $covid]);
       }
 
 
