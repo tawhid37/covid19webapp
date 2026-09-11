@@ -1,17 +1,52 @@
 # COVID-19 Self-Assessment Web App
 
-A web application built with **Laravel 7** and **MySQL** that lets users perform a self-assessment based on COVID-19 symptoms. The system calculates a risk score from the user's answers and provides guidance on what they should do — stay home, consult a doctor, or visit a hospital.
+A web application built with **Laravel 7** and **MySQL** that lets users perform a self-assessment based on COVID-19 symptoms. The system calculates a risk score from the user's answers and provides personalised guidance on the next step — stay home, consult a doctor, or visit a hospital.
 
-> **Disclaimer:** This application is built for software development and educational purposes only. It does **not** provide accurate medical results or diagnoses. User-provided information is not disclosed or stored anywhere outside this demo system.
+> **⚠️ Important disclaimer:** This application is built for **software development and educational purposes only**. It does **not** provide accurate medical results or diagnoses. Any information given by users is not disclosed or stored anywhere outside this demo system.
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Admin Access](#admin-access)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Security](#security)
+- [Contributing](#contributing)
+- [Changelog](#changelog)
+- [License](#license)
 
 ---
 
 ## Features
 
 - **Multi-step assessment form** — collects personal details, body temperature, and symptoms across 3 steps
-- **Automatic risk scoring** — computes a score based on symptoms and temperature
-- **Personalized advice** — suggests the appropriate next step based on the computed score
-- **Admin panel** — view all submitted assessment records (password protected)
+- **Automatic risk scoring** — computes a score based on symptoms and body temperature
+- **Personalised advice** — suggests the appropriate next step based on the computed score
+- **Admin panel** — securely view all submitted assessment records (bcrypt-protected)
+- **Server-side validation** — all form inputs validated via Laravel Form Requests
+- **Protected admin routes** — dedicated middleware guards against unauthorised access
+
+---
+
+## Screenshots
+
+> The screenshots below are faithful UI representations of the application rendered from its actual Blade templates.
+
+| | |
+|:---:|:---:|
+| **Home Page** | **Assessment — Step 1** |
+| ![Home](screenshots/01-home.png) | ![Step 1](screenshots/02-assessment-step1.png) |
+| **Assessment — Step 2** | **Assessment — Step 3** |
+| ![Step 2](screenshots/03-assessment-step2.png) | ![Step 3](screenshots/04-assessment-step3.png) |
+| **Final Result** | **Admin Login** |
+| ![Result](screenshots/05-result.png) | ![Admin Login](screenshots/06-admin-login.png) |
+| **Admin — Users Data** | |
+| ![Admin Data](screenshots/07-admin-data.png) | |
 
 ---
 
@@ -30,7 +65,7 @@ A web application built with **Laravel 7** and **MySQL** that lets users perform
 
 ### Prerequisites
 
-- PHP **7.4+** with required extensions
+- PHP **7.4** (required by `fakerphp/faker`; Laravel 7 supports up to PHP 8.0)
 - Composer
 - MySQL
 
@@ -67,12 +102,16 @@ A web application built with **Laravel 7** and **MySQL** that lets users perform
    DB_PASSWORD=
    ```
 
+   > **Note:** Create the `covid19` database first, or change `DB_DATABASE` to an existing database.
+
 5. **Run migrations and seeders**
 
    ```bash
    php artisan migrate
    php artisan db:seed
    ```
+
+   The seeder loads 5 sample assessment records for demonstration.
 
 6. **Compile frontend assets**
 
@@ -91,41 +130,102 @@ A web application built with **Laravel 7** and **MySQL** that lets users perform
 
 ---
 
+## Admin Access
+
+The admin panel allows viewing all submitted assessment records.
+
+| Item       | Value                                              |
+| ---------- | -------------------------------------------------- |
+| URL        | `http://localhost:8000/adminpass` (via the **ADMIN** link) |
+| Default password | `admin`                                   |
+| Configuration | `config/covid19.php` → `admin_password_hash` (bcrypt, overridable via the `ADMIN_PASSWORD_HASH` env variable) |
+| Protected route | `GET /adminshow` behind the `admin` middleware |
+
+To change the admin password, generate a new bcrypt hash and update `ADMIN_PASSWORD_HASH`:
+
+```bash
+php artisan tinker --execute="echo bcrypt('your-new-password');"
+```
+
+Then set the generated value in your `.env`:
+
+```env
+ADMIN_PASSWORD_HASH=$2y$10$your-generated-hash
+```
+
+---
+
 ## Usage
 
 1. Open the home page and click **Assessment Form**.
-2. Fill in your name, age, gender, and body temperature in **Step 1**.
+2. Fill in your **name, age, gender, and body temperature** in **Step 1**.
 3. Select any symptoms you are experiencing in **Step 2** and **Step 3**.
 4. View your **risk score** and the recommended action on the result page.
 
-### Admin Access
+### Risk Score Interpretation
 
-- Navigate to the **ADMIN** link on the home page.
-- Enter the admin password (set in `CovidController::adminenter`) to view all submitted records.
+| Score | Result | Advice |
+| ----- | ------ | ------ |
+| `0` | Negative | You are safe. Stay Home, Stay Safe. |
+| `< 5` | Negative | Merely have a chance to be affected; isolation and doctor consult advised. |
+| `< 7` | Positive | Possible suspected case; isolation and follow medical advice. |
+| `< 8` | Positive | Highly likely affected; contact a doctor immediately. |
+| `>= 8` | Positive | Almost confirmed case; hospitalisation advised. |
 
 ---
 
 ## Project Structure
 
 ```
-app/
-  Http/
-    Controllers/CovidController.php   # Main application logic
-    Requests/                          # Form Request validation classes
-  Covid.php                            # Assessment record model
-database/
-  migrations/                          # Database schema
-  seeds/                               # Demo data seeders
-resources/
-  views/                               # Blade templates
-routes/web.php                         # Application routes
+covid19/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   └── CovidController.php       # Main application logic
+│   │   ├── Middleware/
+│   │   │   └── EnsureAdminAccess.php     # Protects admin routes
+│   │   └── Requests/                     # Form Request validation classes
+│   │       ├── StoreAssessmentRequest.php
+│   │       ├── StoreSymptomsRequest.php
+│   │       └── StoreAdditionalSymptomsRequest.php
+│   ├── Covid.php                         # Assessment record model
+│   └── ...
+├── config/
+│   └── covid19.php                       # Admin password hash etc.
+├── database/
+│   ├── migrations/                       # Database schema
+│   └── seeds/                            # Demo data seeders
+├── resources/
+│   └── views/                            # Blade templates
+├── routes/
+│   └── web.php                           # Application routes
+└── ...
 ```
+
+---
+
+## Security
+
+This project has been hardened with the following measures (see the [Changelog](CHANGELOG.md) and [Code Review Report](docs/CODE_REVIEW_REPORT.md) for details):
+
+- ✅ Admin password stored as a **bcrypt hash**, verified with Laravel's `Hash::check()` (previously insecure MD5)
+- ✅ Admin routes **protected by a dedicated middleware**
+- ✅ **Server-side Form Request validation** for all user input
+- ✅ **HTTPS** jQuery CDN (fixed mixed-content)
+- ✅ Logout **invalidates the session** and regenerates the CSRF token
+- ✅ SQL injection / XSS mitigated via Blade auto-escaping and parameterised queries
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please open an issue first to discuss what you would like to change, then submit a pull request.
+Thank you for considering contributing! Please review the [Contributing Guidelines](CONTRIBUTING.md) before opening issues or pull requests.
+
+---
+
+## Changelog
+
+See the [CHANGELOG.md](CHANGELOG.md) for a full history of changes, fixes, and releases.
 
 ---
 
