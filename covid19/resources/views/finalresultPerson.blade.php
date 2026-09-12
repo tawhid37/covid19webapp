@@ -28,16 +28,15 @@
                                           <td>Negative</td>
                                           <td>You are safe. Stay Home Stay Safe</td>
 
-
                                     @elseif ($total_count < 5)
                                           <td>Negative</td>
                     <td>Merely have chance to get affected by COVID-19.  You are adviced for isolation ,contact doctor and follow advice.</td>
 
-                                    @elseif ($total_count >=5 )
+                                    @elseif ($total_count < 7)
                                           <td>Positive</td>
                     <td>Possible suspected case for COVID-19 affected.You are adviced for isolation ,contact doctor and follow advice.</td>
 
-                                    @elseif ($total_counte >5 and $total_count< 7)
+                                    @elseif ($total_count < 8)
                                           <td>Positive</td>
 <td>Highly chance of COVID-19 affected. You are adviced for isolation and contact doctor immediately and follow advice. A list of emergency phone numbers to contact in case of any emergency.
 
@@ -46,7 +45,7 @@
 333- National Call Center
 </td>
 
-                                    @elseif ($total_counte >7 )
+                                    @else
                                           <td>Positive</td>
 <td>Almost confirmed case of COVID 19 positive. You are adviced for isolation and contact doctor immediately
 and follow advice.  You are highly adviced to be hospitalized. A list of emergency phone numbers to contact in case of any emergency.
@@ -59,11 +58,8 @@ and follow advice.  You are highly adviced to be hospitalized. A list of emergen
                                   </tr>
                                 </table>
                                <br><br> <a href="/assessment">[TEST ANOTHER]</a>&nbsp&nbsp<a href="/">[BACK TO HOME]</a>
-                              </form>
                 </div>
                         
-                    </form>
-          
                 </div>
             </div>
     
