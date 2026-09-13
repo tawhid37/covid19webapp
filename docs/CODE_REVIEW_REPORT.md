@@ -93,10 +93,40 @@ This documentation branch (`docs/project-documentation`) is built **on top of th
 
 ---
 
-## Recommendations Going Forward
+## Follow-up — Admin Hardening (PR #5)
 
-- Introduce an automated test suite (unit + feature) covering the scoring thresholds and admin auth.
+Two of the recommendations below were implemented in a dedicated follow-up pull request — [PR #5](https://github.com/tawhid37/covid19webapp/pull/5):
+
+| ID | Recommendation | Status |
+| -- | -------------- | ------ |
+| R-01 | CSRF-safe logout | ✅ **Done** — logout is now `POST /logout` (named route) inside the `admin` middleware group, triggered from a Blade form with a `@csrf` token instead of a GET link. |
+| R-02 | Brute-force protection on admin login | ✅ **Done** — `POST /adminpass` is wrapped in Laravel's built-in `throttle:5,1` middleware (5 attempts/minute/IP; `429` beyond that). |
+
+### Remaining recommendations
+
+- Add feature tests for the public assessment flow (multi-step form → result).
 - Consider rotating the demo admin password before any real deployment.
-- Add rate-limiting/brute-force protection on the admin login route.
-- Add CSRF-protection-aware logout (already applied) and confirm no other routes bypass authentication.
+- When the app is deployed publicly, serve over HTTPS and configure proper database credentials via environment variables (never in source).
+
+---
+
+## Follow-up — Production Enhancements (PR #10)
+
+The broader production-readiness recommendations were delivered in [PR #10](https://github.com/tawhid37/covid19webapp/pull/10):
+
+| Recommendation | Status |
+| -------------- | ------ |
+| Automated test suite covering scoring thresholds | ✅ **Done** — scoring extracted to `App\Services\ScoringService` with 11 unit tests (`tests/Unit/ScoringServiceTest.php`); `composer test` wired up. |
+| Rate-limiting + login hardening | ✅ Done in PR #5 (throttle:5,1) — retained. |
+| Large/infinite admin table | ✅ **Done** — `paginate(10)` with summary + pagination links. |
+| Extract scoring logic out of the controller | ✅ **Done** — `ScoringService` used by `CovidController::finalResult()` (pure, behaviour-identical, 13 vectors verified). |
+| Security headers | ✅ **Done** — global `SecurityHeaders` middleware. |
+| CI pipeline | ✅ **Done** — `.github/workflows/ci.yml` (lint + validate + test + assets). |
+| Session cookie hardening | ✅ **Done** — env-configurable `SESSION_SECURE_COOKIE` + `SESSION_SAME_SITE`. |
+| Data import/export convenience | ✅ **Done** — CSV export at `GET /adminshow/export`. |
+
+### Remaining recommendations
+
+- Add feature tests for the public assessment flow (multi-step form → result).
+- Consider rotating the demo admin password before any real deployment.
 - When the app is deployed publicly, serve over HTTPS and configure proper database credentials via environment variables (never in source).
