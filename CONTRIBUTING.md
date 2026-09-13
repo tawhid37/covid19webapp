@@ -107,6 +107,8 @@ Because this application handles user-entered health information, security is a 
 - **Never** trust client-side input — always validate on the server.
 - Use **bcrypt** and Laravel's `Hash` facade for passwords.
 - Keep sensitive/admin functionality behind **middleware**.
+- Perform state-changing actions via **`POST` forms with `@csrf` tokens** — never GET links (see the CSRF-safe logout pattern).
+- Protect authentication endpoints against brute-force with Laravel's **`throttle`** middleware.
 - Rely on **Blade auto-escaping** and parameterised queries to prevent XSS and SQL injection.
 - Use `https://` when referencing external assets.
 

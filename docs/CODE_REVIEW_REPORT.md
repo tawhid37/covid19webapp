@@ -93,10 +93,17 @@ This documentation branch (`docs/project-documentation`) is built **on top of th
 
 ---
 
-## Recommendations Going Forward
+## Follow-up — Admin Hardening (PR #5)
+
+Two of the recommendations below were implemented in a dedicated follow-up pull request — [PR #5](https://github.com/tawhid37/covid19webapp/pull/5):
+
+| ID | Recommendation | Status |
+| -- | -------------- | ------ |
+| R-01 | CSRF-safe logout | ✅ **Done** — logout is now `POST /logout` (named route) inside the `admin` middleware group, triggered from a Blade form with a `@csrf` token instead of a GET link. |
+| R-02 | Brute-force protection on admin login | ✅ **Done** — `POST /adminpass` is wrapped in Laravel's built-in `throttle:5,1` middleware (5 attempts/minute/IP; `429` beyond that). |
+
+### Remaining recommendations
 
 - Introduce an automated test suite (unit + feature) covering the scoring thresholds and admin auth.
 - Consider rotating the demo admin password before any real deployment.
-- Add rate-limiting/brute-force protection on the admin login route.
-- Add CSRF-protection-aware logout (already applied) and confirm no other routes bypass authentication.
 - When the app is deployed publicly, serve over HTTPS and configure proper database credentials via environment variables (never in source).

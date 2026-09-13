@@ -10,11 +10,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Overview
 
-A systematic **code-quality and security review** of the application produced **21 fixes** across three severity levels, delivered through three stackable pull requests:
+A systematic **code-quality and security review** of the application produced fixes delivered through four stackable pull requests:
 
 - **10 low-severity** code-quality fixes — [PR #1](https://github.com/tawhid37/covid19webapp/pull/1)
 - **6 medium-severity** logic/HTML fixes — [PR #2](https://github.com/tawhid37/covid19webapp/pull/2)
 - **5 high-severity** security fixes — [PR #3](https://github.com/tawhid37/covid19webapp/pull/3)
+- **2 admin-hardening** fixes (CSRF-safe logout + brute-force protection) — [PR #5](https://github.com/tawhid37/covid19webapp/pull/5)
+
+### Admin Hardening — Logout & Brute-Force (PR #5)
+
+- 🚪 **CSRF-safe logout** — logout moved from `GET /logout` to a **`POST /logout`** route (named `logout`) inside the `admin` middleware group. The admin view now submits a form with a **`@csrf` token** instead of a plain link, eliminating the CSRF/logout-abuse vector.
+- 🛡️ **Rate-limited admin login** — `POST /adminpass` is now wrapped in Laravel's built-in **`throttle:5,1`** middleware, limiting brute-force password guessing to **5 attempts per minute per IP** (429 response beyond that).
 
 ### High — Security (PR #3)
 
