@@ -18,17 +18,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/logout', function () {
-    session()->invalidate();
-    session()->regenerateToken();
-    return redirect('/');
-});
-
 Route::get('/adminpass', [CovidController::class, 'adminpass']);
-Route::post('/adminpass', [CovidController::class, 'adminenter']);
+Route::post('/adminpass', [CovidController::class, 'adminenter'])->middleware('throttle:5,1');
 
 Route::middleware('admin')->group(function () {
     Route::get('/adminshow', [CovidController::class, 'adminshow']);
+    Route::get('/adminshow/export', [CovidController::class, 'exportCsv'])->name('adminshow.export');
+    Route::post('/logout', function () {
+        session()->invalidate();
+        session()->regenerateToken();
+        return redirect('/');
+    })->name('logout');
 });
 
 Route::get('/assessment', [CovidController::class, 'assessmentform']);

@@ -38,9 +38,42 @@ class CovidController extends Controller
       }
 
       public function adminshow() {
-        $covid = Covid::select("id", 'Name', 'Age', 'SEX', 'Temperature', 'Score', 'Result', 'created_at')->get();
+        $covid = Covid::select("id", 'Name', 'Age', 'SEX', 'Temperature', 'Score', 'Result', 'created_at')
+          ->orderByDesc('id')
+          ->paginate(10);
 
         return view('adminshow', ['covid' => $covid]);
+      }
+
+      public function exportCsv() {
+        $rows = Covid::select("id", 'Name', 'Age', 'SEX', 'Temperature', 'Score', 'Result', 'created_at')
+          ->orderByDesc('id')
+          ->get();
+
+        $filename = 'covid19-assessments-' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($rows) {
+          $handle = fopen('php://output', 'w');
+
+          fputcsv($handle, ['ID', 'Name', 'Age', 'Sex', 'Temperature', 'Score', 'Result', 'Created At']);
+
+          foreach ($rows as $row) {
+            fputcsv($handle, [
+              $row->id,
+              $row->Name,
+              $row->Age,
+              $row->SEX,
+              $row->Temperature,
+              $row->Score,
+              $row->Result,
+              $row->created_at,
+            ]);
+          }
+
+          fclose($handle);
+        }, $filename, [
+          'Content-Type' => 'text/csv',
+        ]);
       }
 
 
@@ -84,75 +117,28 @@ class CovidController extends Controller
       
       }
 
-       public function finalResult(StoreAdditionalSymptomsRequest $request) 
+public function finalResult(StoreAdditionalSymptomsRequest $request) 
        {
-       	  $counter=0;
-         
-          $Body_temperature = $request->input('bodytemp');
-		  
+       	  $scoring = app(\App\Services\ScoringService::class);
 
-		  $design_id = 'NoneofThese';
-		  $Symptoms = $request->input('symptoms');
+          $counter = $scoring->score(
+              $request->input('symptoms', []),
+              $request->input('asymptoms', []),
+              $request->input('bodytemp')
+          );
 
-			if(in_array($design_id, $Symptoms) and count($Symptoms)==1)
-			{
-			  $counter=0;
-			  
+          $text = $scoring->resultFor($counter);
 
-			}
-			else if (count($Symptoms)>=2)
-    			{
-    				$counter = $counter+(count($Symptoms)+2);
+          $last_info=[
+        	  'total_count' => $counter,
+        	  'Name' => $request->input('name'),
+              'Age' => $request->input('age'),
+              'Gender' => $request->input('sex'),
+              'Body_temperature' => $request->input('bodytemp')
 
+        	]; 
 
-    			}
-     		else {
-     			$Symptoms = $request->input('symptoms');
-     			if (count($Symptoms)== 1 and !in_array($design_id, $Symptoms) ) {
-    			$counter = $counter+3;
-    			
-    			
-    		}}
-
-    	  $design_id = 'NoneofThese';
-		  $ASymptoms = $request->input('asymptoms');
-
-		  if(in_array($design_id, $ASymptoms) and count($ASymptoms)==1)
-			{
-			  $counter=$counter+0;
-
-
-		  if ((float)$Body_temperature>=99.5 and (float)$Body_temperature<=100.9) {
-        			$counter = $counter+ 2;
-        		}
-			  
-			  
-			}
-     	   else {
-     			$ASymptoms = $request->input('asymptoms');
-    			$counter = $counter+(count($ASymptoms)*2);
-
-
-		  			if ((float)$Body_temperature>=99.5 and (float)$Body_temperature<=100.9) {
-        			$counter = $counter+ 2;
-        		}
-    		  } 
-
-
-        $last_info=[
-    	  'total_count' => $counter,
-    	  'Name' => $request->input('name'),
-          'Age' => $request->input('age'),
-          'Gender' => $request->input('sex'),
-          'Body_temperature' => $request->input('bodytemp')
-
-    	]; 
-
-    	if ($counter < 5){$text="Negative" ;}
-        else {$text="Positive" ;}
-                                          
-
-    	  $covid = new Covid();
+          $covid = new Covid();
       
           $covid->Name = $request->input('name');
           $covid->Age = $request->input('age');
@@ -160,10 +146,8 @@ class CovidController extends Controller
           $covid->Temperature =  $request->input('bodytemp');
           $covid->Score = $counter;
           $covid->Result = $text;
-          //return request('toppings');
           $covid->save();
     	  
-    		//return $last_info;
           return view('finalresultPerson', $last_info);
 
       }
