@@ -140,6 +140,10 @@ The admin panel allows viewing all submitted assessment records.
 | Default password | `admin`                                   |
 | Configuration | `config/covid19.php` → `admin_password_hash` (bcrypt, overridable via the `ADMIN_PASSWORD_HASH` env variable) |
 | Protected route | `GET /adminshow` behind the `admin` middleware |
+| Login rate limit | **5 attempts per minute per IP** (`throttle:5,1`) |
+| Logout | `POST /logout` (CSRF-protected form) inside the `admin` route group |
+
+> **Security:** entering the wrong password 5 times within a minute locks login for that IP for 1 minute (`429 Too Many Requests`).
 
 To change the admin password, generate a new bcrypt hash and update `ADMIN_PASSWORD_HASH`:
 
@@ -213,6 +217,8 @@ This project has been hardened with the following measures (see the [Changelog](
 - ✅ **Server-side Form Request validation** for all user input
 - ✅ **HTTPS** jQuery CDN (fixed mixed-content)
 - ✅ Logout **invalidates the session** and regenerates the CSRF token
+- ✅ Logout is **CSRF-safe** — it is a `POST` form (with token) inside the `admin` middleware group, not a GET link
+- ✅ Admin login is **rate-limited** (5 attempts/minute/IP) via Laravel's `throttle` middleware
 - ✅ SQL injection / XSS mitigated via Blade auto-escaping and parameterised queries
 
 ---
