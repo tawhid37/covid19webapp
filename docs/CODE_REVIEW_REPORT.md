@@ -104,6 +104,29 @@ Two of the recommendations below were implemented in a dedicated follow-up pull 
 
 ### Remaining recommendations
 
-- Introduce an automated test suite (unit + feature) covering the scoring thresholds and admin auth.
+- Add feature tests for the public assessment flow (multi-step form → result).
+- Consider rotating the demo admin password before any real deployment.
+- When the app is deployed publicly, serve over HTTPS and configure proper database credentials via environment variables (never in source).
+
+---
+
+## Follow-up — Production Enhancements (PR #10)
+
+The broader production-readiness recommendations were delivered in [PR #10](https://github.com/tawhid37/covid19webapp/pull/10):
+
+| Recommendation | Status |
+| -------------- | ------ |
+| Automated test suite covering scoring thresholds | ✅ **Done** — scoring extracted to `App\Services\ScoringService` with 11 unit tests (`tests/Unit/ScoringServiceTest.php`); `composer test` wired up. |
+| Rate-limiting + login hardening | ✅ Done in PR #5 (throttle:5,1) — retained. |
+| Large/infinite admin table | ✅ **Done** — `paginate(10)` with summary + pagination links. |
+| Extract scoring logic out of the controller | ✅ **Done** — `ScoringService` used by `CovidController::finalResult()` (pure, behaviour-identical, 13 vectors verified). |
+| Security headers | ✅ **Done** — global `SecurityHeaders` middleware. |
+| CI pipeline | ✅ **Done** — `.github/workflows/ci.yml` (lint + validate + test + assets). |
+| Session cookie hardening | ✅ **Done** — env-configurable `SESSION_SECURE_COOKIE` + `SESSION_SAME_SITE`. |
+| Data import/export convenience | ✅ **Done** — CSV export at `GET /adminshow/export`. |
+
+### Remaining recommendations
+
+- Add feature tests for the public assessment flow (multi-step form → result).
 - Consider rotating the demo admin password before any real deployment.
 - When the app is deployed publicly, serve over HTTPS and configure proper database credentials via environment variables (never in source).

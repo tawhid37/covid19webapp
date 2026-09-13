@@ -78,13 +78,16 @@ This is a **Laravel 7 (PHP 7.4)** application.
 
 ## Testing
 
-Currently the project uses **no automated test suite**. Until tests are introduced:
+The project ships with a **PHPUnit** suite. Run it with `composer test` (invokes `vendor/bin/phpunit`). A **GitHub Actions** workflow (`.github/workflows/ci.yml`) runs lint + validation + tests on every PR.
 
+Before opening a pull request:
+
+- Run `composer test` and keep the suite green (`tests/Unit/ScoringServiceTest` covers the score thresholds and temperature boundaries).
 - Manually verify every flow you touch (new, edit, result, admin).
 - Confirm the risk score and result advice match the documented thresholds in the [README](README.md#risk-score-interpretation).
 - Ensure no PHP errors or `laravel.log` warnings are introduced.
 
-When a test suite is added, please update this section and add tests for any new logic.
+Please add **tests for any new logic** (especially scoring, validation, or admin behaviour).
 
 ---
 

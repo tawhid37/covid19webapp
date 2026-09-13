@@ -10,12 +10,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Overview
 
-A systematic **code-quality and security review** of the application produced fixes delivered through four stackable pull requests:
+A systematic **code-quality, security, and production-readiness** review of the application produced fixes delivered through five pull requests:
 
 - **10 low-severity** code-quality fixes — [PR #1](https://github.com/tawhid37/covid19webapp/pull/1)
 - **6 medium-severity** logic/HTML fixes — [PR #2](https://github.com/tawhid37/covid19webapp/pull/2)
 - **5 high-severity** security fixes — [PR #3](https://github.com/tawhid37/covid19webapp/pull/3)
 - **2 admin-hardening** fixes (CSRF-safe logout + brute-force protection) — [PR #5](https://github.com/tawhid37/covid19webapp/pull/5)
+- **8 production-grade enhancements** (pagination, CSV export, security headers, CI, scoring service + tests, schema indexes, session hardening, admin a11y) — [PR #10](https://github.com/tawhid37/covid19webapp/pull/10)
+
+### Production Enhancements (PR #10)
+
+- 🧾 **Admin pagination** — `adminshow()` now uses `paginate(10)` + `orderByDesc('id')`; the view renders a record summary and pagination links instead of dumping every row.
+- 📥 **CSV export** — new `GET /adminshow/export` route (behind `admin` middleware) streams a timestamped CSV of all records.
+- 🛡️ **Security headers middleware** — `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `X-XSS-Protection`, `Permissions-Policy` applied globally; HSTS when HTTPS.
+- 🤖 **CI pipeline (GitHub Actions)** — PHP 7.4 lint (`php -l` on every file), `composer validate`, `composer test`, and frontend asset build on every PR.
+- ✅ **Scoring service + unit tests** — scoring logic extracted from the controller into `App\Services\ScoringService` with 11 tests covering all score tiers and temperature boundaries. The controller's result flow is behaviour-identical (verified against 13 vectors).
+- 🗄️ **Schema indexes** — additive migration adds indexes on `created_at` and `Result`.
+- 🔒 **Session hardening** — `same_site` env-configurable (default `lax`), secure cookie override documented in `.env.example`.
+- ♿ **Admin table a11y** — responsive wrapper, `scope`/`aria` attributes, semantic table markup.
 
 ### Admin Hardening — Logout & Brute-Force (PR #5)
 

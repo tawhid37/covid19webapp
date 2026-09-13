@@ -25,11 +25,12 @@ A web application built with **Laravel 7** and **MySQL** that lets users perform
 ## Features
 
 - **Multi-step assessment form** — collects personal details, body temperature, and symptoms across 3 steps
-- **Automatic risk scoring** — computes a score based on symptoms and body temperature
+- **Automatic risk scoring** — computes a score based on symptoms and body temperature, via a unit-tested `ScoringService`
 - **Personalised advice** — suggests the appropriate next step based on the computed score
-- **Admin panel** — securely view all submitted assessment records (bcrypt-protected)
+- **Admin panel** — securely view all submitted assessment records (bcrypt-protected), with **pagination** and **CSV export**
 - **Server-side validation** — all form inputs validated via Laravel Form Requests
 - **Protected admin routes** — dedicated middleware guards against unauthorised access
+- **Automated tests & CI** — PHPUnit suite (score thresholds, temperature boundaries) run by GitHub Actions on every PR
 
 ---
 
@@ -58,6 +59,8 @@ A web application built with **Laravel 7** and **MySQL** that lets users perform
 | Database   | MySQL                    |
 | Frontend   | Blade templates, jQuery  |
 | Build      | Laravel Mix (Webpack)    |
+| Testing    | PHPUnit (`composer test`) |
+| CI/CD      | GitHub Actions (`.github/workflows/ci.yml`) |
 
 ---
 
@@ -139,7 +142,9 @@ The admin panel allows viewing all submitted assessment records.
 | URL        | `http://localhost:8000/adminpass` (via the **ADMIN** link) |
 | Default password | `admin`                                   |
 | Configuration | `config/covid19.php` → `admin_password_hash` (bcrypt, overridable via the `ADMIN_PASSWORD_HASH` env variable) |
-| Protected route | `GET /adminshow` behind the `admin` middleware |
+| Protected routes | `GET /adminshow` + `GET /adminshow/export` behind the `admin` middleware |
+| Listing | Paginated — 10 records per page with summary + links |
+| CSV export | `GET /adminshow/export` streams a dated CSV of all records |
 | Login rate limit | **5 attempts per minute per IP** (`throttle:5,1`) |
 | Logout | `POST /logout` (CSRF-protected form) inside the `admin` route group |
 
@@ -187,24 +192,30 @@ covid19/
 │   │   ├── Controllers/
 │   │   │   └── CovidController.php       # Main application logic
 │   │   ├── Middleware/
-│   │   │   └── EnsureAdminAccess.php     # Protects admin routes
+│   │   │   ├── EnsureAdminAccess.php     # Protects admin routes
+│   │   │   └── SecurityHeaders.php       # Global security headers
 │   │   └── Requests/                     # Form Request validation classes
 │   │       ├── StoreAssessmentRequest.php
 │   │       ├── StoreSymptomsRequest.php
 │   │       └── StoreAdditionalSymptomsRequest.php
+│   ├── Services/
+│   │   └── ScoringService.php            # Unit-tested risk scoring
 │   ├── Covid.php                         # Assessment record model
 │   └── ...
 ├── config/
 │   └── covid19.php                       # Admin password hash etc.
 ├── database/
-│   ├── migrations/                       # Database schema
+│   ├── migrations/                       # Database schema (incl. indexes)
 │   └── seeds/                            # Demo data seeders
 ├── resources/
 │   └── views/                            # Blade templates
 ├── routes/
 │   └── web.php                           # Application routes
+├── tests/
+│   └── Unit/ScoringServiceTest.php       # Scoring unit tests
 └── ...
 ```
+`.github/workflows/ci.yml` — lint + validation + tests + asset build.
 
 ---
 
@@ -219,7 +230,24 @@ This project has been hardened with the following measures (see the [Changelog](
 - ✅ Logout **invalidates the session** and regenerates the CSRF token
 - ✅ Logout is **CSRF-safe** — it is a `POST` form (with token) inside the `admin` middleware group, not a GET link
 - ✅ Admin login is **rate-limited** (5 attempts/minute/IP) via Laravel's `throttle` middleware
+- ✅ **Security headers** applied globally — `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `X-XSS-Protection`, `Permissions-Policy`, plus HSTS over HTTPS
+- ✅ **Session hardening** — HttpOnly + SameSite (`lax`) cookies, secure-cookie toggle via `SESSION_SECURE_COOKIE`
 - ✅ SQL injection / XSS mitigated via Blade auto-escaping and parameterised queries
+
+---
+
+## Testing
+
+The project ships with a **PHPUnit** suite. Run it with:
+
+```bash
+composer test
+```
+
+Current coverage:
+- `ScoringServiceTest` — every score tier (`0`, `< 5`, `>= 5`) and the temperature boundaries (`99.5`–`100.9`) with 11 tests.
+
+A **GitHub Actions** workflow (`.github/workflows/ci.yml`) runs `php -l` on every PHP file, validates `composer.json`, runs the test suite, and builds frontend assets on each push/PR.
 
 ---
 
