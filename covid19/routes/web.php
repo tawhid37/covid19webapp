@@ -23,6 +23,7 @@ Route::post('/adminpass', [CovidController::class, 'adminenter'])->middleware('t
 
 Route::middleware('admin')->group(function () {
     Route::get('/adminshow', [CovidController::class, 'adminshow']);
+    Route::get('/adminshow/export', [CovidController::class, 'exportCsv'])->name('adminshow.export');
     Route::post('/logout', function () {
         session()->invalidate();
         session()->regenerateToken();
