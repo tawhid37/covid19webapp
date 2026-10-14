@@ -14,6 +14,6 @@
 .footer {
    position: fixed;
 }
-                    </style>>
+                    </style>
     
        @endsection

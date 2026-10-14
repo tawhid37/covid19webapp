@@ -16,10 +16,10 @@ class CreateCovidsTable extends Migration
         Schema::create('covids', function (Blueprint $table) {
             $table->id();
             $table->string('Name');
-            $table->string('Age');
+            $table->unsignedInteger('Age');
             $table->string('SEX');
-            $table->string('Temperature');
-            $table->string('Score');
+            $table->decimal('Temperature', 4, 1);
+            $table->unsignedInteger('Score');
             $table->string('Result');
             $table->timestamps();
         });
