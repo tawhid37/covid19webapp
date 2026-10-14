@@ -3,13 +3,13 @@
 @section('content')
 
 	<div class="admin-header-bar my_text_new">
-		COVID-19 Self-Assessment System Users Data
+		COVID-19 Self-Assessment System - Users Data
 	</div>
 
 	<div class="admin-main-container">
 		<h1 class="admin-page-title">Admin - Users Data</h1>
 		<div class="admin-records-count">
-			Showing {{ $covid->firstItem() ?? 0 }}–{{ $covid->lastItem() ?? 0 }} of {{ $covid->total() }} records
+			Showing {{ $covid->firstItem() ?? 0 }}-{{ $covid->lastItem() ?? 0 }} of {{ $covid->total() }} records
 		</div>
 
 		<div style="overflow-x:auto; margin: 16px 0;">
@@ -45,7 +45,7 @@
 			</table>
 		</div>
 
-		<div class="pagination">
+		<div class="admin-pagination-wrapper">
 			{{ $covid->links() }}
 		</div>
 

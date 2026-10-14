@@ -64,7 +64,7 @@ class AdminAccessTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertSee('COVID-19 Self-Assessment System Users Data');
+            ->assertSee('COVID-19 Self-Assessment System - Users Data');
     }
 
     /**

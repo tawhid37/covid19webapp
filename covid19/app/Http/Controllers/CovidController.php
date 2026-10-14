@@ -40,7 +40,7 @@ class CovidController extends Controller
       public function adminshow() {
         $covid = Covid::select("id", 'Name', 'Age', 'SEX', 'Temperature', 'Score', 'Result', 'created_at')
           ->orderByDesc('id')
-          ->paginate(10);
+          ->paginate(5);
 
         return view('adminshow', ['covid' => $covid]);
       }
