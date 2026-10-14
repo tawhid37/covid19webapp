@@ -1,132 +1,562 @@
-html,
-body {
-  font-family: "Nunito", sans-serif;
-  font-weight: 200;
-  height: 100vh;
+/* ==========================================================================
+   COVID-19 Self-Assessment Web App - Complete Modern Design System
+   Matches README UI specifications and screenshots
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap');
+
+:root {
+  --primary: #2b78e4;
+  --primary-hover: #1e64c8;
+  --success: #28a745;
+  --success-hover: #218838;
+  --danger: #dc3545;
+  --danger-hover: #bd2130;
+  --dark-nav: #2c3e50;
+  --bg-page: #f4f7fb;
+  --card-bg: #ffffff;
+  --text-main: #334e68;
+  --text-muted: #627d98;
+  --border-color: #d2d6dc;
+  --radius-card: 12px;
+  --radius-input: 6px;
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Top Header & Navigation (Home / Steps)
+   ========================================================================== */
+.right {
+  position: absolute;
+  top: 24px;
+  right: 36px;
+  z-index: 100;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.right a {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: color 0.15s ease-in-out;
+}
+
+.right a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Home Page View (Matches 01-home.png)
+   ========================================================================== */
+.my_text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 38px;
+  font-weight: 300;
+  color: var(--text-main);
+  text-align: center;
+  margin: auto 0;
+  padding: 60px 20px;
+  background: transparent !important;
+}
+
+.my_text a,
+a[href="/assessment"] {
+  display: inline-block;
+  background-color: var(--primary);
+  color: #ffffff !important;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 14px 34px;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(43, 120, 228, 0.3);
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.my_text a:hover,
+a[href="/assessment"]:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(43, 120, 228, 0.4);
+}
+
+/* ==========================================================================
+   Card Styling for Assessment Steps & Result (Matches 02, 03, 04, 05)
+   ========================================================================== */
+.content {
+  background: transparent !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  margin: auto 0;
+}
+
+.content > .title {
+  background-color: var(--card-bg) !important;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid #e2e8f0;
+  padding: 40px 48px;
+  width: 100%;
+  max-width: 680px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Headings */
+h1 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #102a43;
+  margin: 0 0 20px 0;
+}
+
+/* User Info Bar in Steps 2 & 3 */
+.content pre {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: #486581;
+  background-color: #f8fafc;
+  padding: 8px 14px;
+  border-radius: 6px;
+  margin: 4px 0 16px 0;
+  display: block;
+  white-space: pre-wrap;
+  border: 1px solid #edf2f7;
+}
+
+/* Form Controls */
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334e68;
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #102a43;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  display: block;
+  outline: none;
+  box-sizing: border-box;
+  margin: 4px 0 14px 0;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(43, 120, 228, 0.15);
+}
+
+/* Temperature Slider (Matches 02-assessment-step1.png) */
+input[type="range"] {
+  width: calc(100% - 100px);
+  margin: 0 10px;
+  height: 6px;
+  border-radius: 3px;
+  background: #cbd5e1;
+  accent-color: var(--primary);
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+#bodytemp {
+  width: 120px !important;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--primary);
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin: 12px auto;
+  display: block;
+}
+
+/* Fieldsets for Symptoms */
+fieldset {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px;
+  padding: 18px 24px;
+  margin: 18px 0 24px 0;
+  background-color: #ffffff;
+}
+
+fieldset label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334e68;
+  margin: 0 0 12px 0;
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 8px 10px 8px 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+/* Buttons */
+input[type="submit"] {
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  display: inline-block;
+}
+
+/* Step 1 Submit Button (Green - Matches 02) */
+input[value="Go to next details"] {
+  background-color: var(--success) !important;
+  color: #ffffff !important;
+  width: auto !important;
+}
+
+input[value="Go to next details"]:hover {
+  background-color: var(--success-hover) !important;
+  transform: translateY(-1px);
+}
+
+/* Step 2 & 3 Submit Button (Blue - Matches 03, 04) */
+input[value="step3"],
+input[value="Your result"] {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+  width: auto !important;
+}
+
+input[value="step3"]:hover,
+input[value="Your result"]:hover {
+  background-color: var(--primary-hover) !important;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Admin Login Page (Matches 06-admin-login.png)
+   ========================================================================== */
+form[action="/adminpass"] {
+  background-color: var(--card-bg) !important;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid #e2e8f0;
+  padding: 44px 48px;
+  width: 100%;
+  max-width: 480px;
+  margin: auto auto;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+form[action="/adminpass"]::before {
+  content: "Admin Login";
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #102a43;
+  margin-bottom: 24px;
+}
+
+form[action="/adminpass"] label {
+  text-transform: none;
+  font-weight: 400;
+  color: #486581;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+form[action="/adminpass"] input[type="password"] {
+  margin-bottom: 20px;
+}
+
+form[action="/adminpass"] input[type="submit"] {
+  width: 100% !important;
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 6px;
+}
+
+form[action="/adminpass"] input[type="submit"]:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+form[action="/adminpass"] p {
+  color: var(--danger);
+  font-weight: 600;
+  font-size: 14px;
+  margin: 14px 0 0 0;
+}
+
+/* ==========================================================================
+   Admin Users Data Page (Matches 07-admin-data.png)
+   ========================================================================== */
+.admin-data-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-header-bar,
+.my_text_new {
+  width: 100%;
+  background-color: var(--dark-nav);
+  color: #ffffff;
+  padding: 16px 36px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-sizing: border-box;
   margin: 0;
 }
-fieldset {
-    border: 0;
+
+.admin-main-container {
+  padding: 30px 36px;
+  width: 100%;
+  max-width: 1350px;
+  margin: 0 auto;
+  flex: 1;
+  box-sizing: border-box;
 }
-table, td, th {  
-  border: 1px solid #ddd;
+
+.admin-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--dark-nav);
+  margin-bottom: 6px;
+}
+
+.admin-records-count {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+/* Admin Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+table thead th {
+  background-color: var(--dark-nav) !important;
+  color: #ffffff !important;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 13px 16px !important;
+  border: none !important;
   text-align: left;
 }
 
-.my_text
-{
-font-family:    Arial, Helvetica, sans-serif;
-font-size:      40px;
-font-weight:    bold;
-text-align: center;
+table tbody td {
+  padding: 13px 16px !important;
+  font-size: 14px;
+  color: #334e68;
+  border: none !important;
+  border-bottom: 1px solid #edf2f7 !important;
 }
 
-.my_text_new
-{
-font-family:    Arial, Helvetica, sans-serif;
-font-size:      25px;
-font-weight:    bold;
-text-align: center;
+table tbody tr:hover {
+  background-color: #f8fafc;
 }
 
-
-table {
-  border-collapse: collapse;
-  width: 100%;
+/* Negative / Positive badges */
+td:nth-child(7):contains("Negative"),
+td:contains("Negative") {
+  color: var(--success) !important;
+  font-weight: 700;
 }
 
-th, td {
-  padding: 15px;
+td:nth-child(7):contains("Positive"),
+td:contains("Positive") {
+  color: var(--danger) !important;
+  font-weight: 700;
 }
-.right {
-  position: absolute;
-  right: 0px;
-  width: 50px;
 
+/* Result table on final result page */
+.content table {
+  margin: 20px 0;
 }
-a {
-  color: Blue;
-  position: relative;
-}
-.footer {
-   position: relative;
-   left: 0;
-   bottom: 0;
-   height: 8%;
-   width: 97%;
-   padding: 20px;
-   background-color: Black;
-   color: white;
-   text-align: center;
-}
-  
 
-input[type=text],  select {
-  width: 40%;
-  padding: 12px 20px;
-  margin: 8px 0;
+.content table th {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+  font-weight: 700;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.content table td {
+  border: 1px solid #e2e8f0 !important;
+  vertical-align: top;
+}
+
+/* Pagination (Matches 07) */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 18px 0;
+  gap: 4px;
+}
+
+.pagination li {
   display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-input[type=password],  select {
-  width: 40%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-#bodytemp,  select {
-  width: 40%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
 }
 
-input[type=number],  select {
-  width: 40%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
+.pagination li a,
+.pagination li span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
   border-radius: 4px;
-  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #475569;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 600;
 }
 
-input[type=range],  select {
-  width: 40%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+.pagination li.active span {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+  border-color: var(--primary) !important;
 }
 
+.pagination li a:hover {
+  background-color: #f1f5f9;
+}
 
-input[type=submit] {
-  width: 60%;
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
+/* Admin Action Buttons */
+form[action*="export"] button {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+  padding: 10px 22px;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 4px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-input[type=submit]:hover {
-  background-color: #45a049;
+form[action*="export"] button:hover {
+  background-color: var(--primary-hover) !important;
 }
 
-div {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 10px;
+form[action*="logout"] button {
+  background-color: var(--danger) !important;
+  color: #ffffff !important;
+  padding: 10px 22px;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+form[action*="logout"] button:hover {
+  background-color: var(--danger-hover) !important;
+}
+
+/* ==========================================================================
+   Result Page Actions (Matches 05-result.png)
+   ========================================================================== */
+.content a[href="/assessment"],
+.content a[href="/"] {
+  color: var(--primary) !important;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 15px;
+  margin-right: 16px;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.content a[href="/assessment"]:hover,
+.content a[href="/"]:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.footer {
+  width: 100% !important;
+  background-color: #eef2f7 !important;
+  color: #829ab1 !important;
+  text-align: center;
+  padding: 18px 24px !important;
+  font-size: 13.5px;
+  margin-top: auto !important;
+  position: relative !important;
+  left: auto !important;
+  bottom: auto !important;
+  box-sizing: border-box !important;
+}
+
+.footer p {
+  margin: 0;
 }

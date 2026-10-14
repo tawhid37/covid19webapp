@@ -2,22 +2,19 @@
 
 @section('content')
 
-				<form action="/adminpass" method="POST">
-				  @csrf
-				 <b><label for="pass">GIVE PASSWORD TO ACCESS ADMIN:</label></b>   <input type="PASSWORD" name="pass" id="pass" required> <br>
+<div class="content">
+	<form action="/adminpass" method="POST">
+		@csrf
+		<h1>Admin Login</h1>
+		<b><label for="pass">GIVE PASSWORD TO ACCESS ADMIN:</label></b>
+		<input type="password" name="pass" id="pass" required autocomplete="current-password">
 
-				 <b><p>{{session('mssg')}}</p></b>
+		<input type="submit" value="GET DATABASE ACESS">
 
-				 <input type="submit" value="GET DATABASE ACESS"> 
-				</form>
-				<style type="text/css">
-									.footer {
-   position: fixed;
-}
-
-				</style>
-
+		@if(session('mssg'))
+			<p style="color: #dc3545; font-weight: 600; margin-top: 16px;">{{ session('mssg') }}</p>
+		@endif
+	</form>
+</div>
 
 @endsection
-
-
