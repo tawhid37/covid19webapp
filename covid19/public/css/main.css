@@ -1,6 +1,6 @@
 /* ==========================================================================
    COVID-19 Self-Assessment Web App - Pixel-Perfect Design System
-   Matches 01-home.png and 02-assessment-step1.png precisely
+   Matches README UI specifications and screenshots precisely
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;800&display=swap');
@@ -301,6 +301,73 @@ input[value="Go to next details"]:hover {
 }
 
 /* ==========================================================================
+   Admin Login Card View (Matches 06-admin-login.png)
+   ========================================================================== */
+.admin-login-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 44px 48px;
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.login-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: center;
+  margin: 0 0 14px 0;
+}
+
+.login-label {
+  font-size: 14.5px;
+  font-weight: 400;
+  color: var(--text-main);
+  text-align: center;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.btn-login,
+input[value="GET DATABASE ACCESS"],
+input[value="GET DATABASE ACESS"] {
+  width: 100% !important;
+  height: 46px !important;
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+  font-family: 'Nunito', sans-serif !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  border-radius: 6px !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.15s ease-in-out !important;
+  display: block !important;
+}
+
+.btn-login:hover,
+input[value="GET DATABASE ACCESS"]:hover,
+input[value="GET DATABASE ACESS"]:hover {
+  background-color: var(--primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(43, 120, 228, 0.3) !important;
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: 14px;
+  text-align: center;
+  margin: 16px 0 0 0;
+}
+
+/* ==========================================================================
    Steps 2, 3, Result, Admin Shared Styles
    ========================================================================== */
 .content {
@@ -378,7 +445,7 @@ input[value="Your result"]:hover {
 }
 
 /* ==========================================================================
-   Admin Show Table & Header
+   Admin Show Table & Header (Matches 07-admin-data.png)
    ========================================================================== */
 .admin-header-bar,
 .my_text_new {

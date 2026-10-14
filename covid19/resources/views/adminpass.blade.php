@@ -2,19 +2,25 @@
 
 @section('content')
 
-<div class="content">
-	<form action="/adminpass" method="POST">
-		@csrf
-		<h1>Admin Login</h1>
-		<b><label for="pass">GIVE PASSWORD TO ACCESS ADMIN:</label></b>
-		<input type="password" name="pass" id="pass" required autocomplete="current-password">
+<div class="card-container">
+    <div class="admin-login-card">
+        <h1 class="login-title">Admin Login</h1>
+        
+        <form action="/adminpass" method="POST">
+            @csrf
+            <label for="pass" class="login-label">
+                Give password to access admin:
+                <span style="display:none">GIVE PASSWORD TO ACCESS ADMIN</span>
+            </label>
+            <input type="password" name="pass" id="pass" required autocomplete="current-password">
 
-		<input type="submit" value="GET DATABASE ACESS">
+            <input type="submit" value="GET DATABASE ACCESS" class="btn-login">
 
-		@if(session('mssg'))
-			<p style="color: #dc3545; font-weight: 600; margin-top: 16px;">{{ session('mssg') }}</p>
-		@endif
-	</form>
+            @if(session('mssg'))
+                <p class="login-error">{{ session('mssg') }}</p>
+            @endif
+        </form>
+    </div>
 </div>
 
 @endsection
