@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }} — lint, validate & test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4' ]
+    defaults:
+      run:
+        working-directory: covid19
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pdo, pdo_sqlite, sqlite3, pdo_mysql, zip, intl
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: covid19/vendor
+          key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('covid19/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ matrix.php }}-
+
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Create environment file
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Lint all PHP files
+        run: find app bootstrap config database routes tests -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Run test suite
+        run: composer test
+
+      - name: Build frontend assets
+        run: |
+          npm install --no-audit --no-fund
+          npm run prod
