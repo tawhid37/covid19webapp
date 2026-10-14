@@ -17,6 +17,11 @@ trait CreatesApplication
 
         $app->make(Kernel::class)->bootstrap();
 
+        // Run the test suite against an in-memory SQLite database so no
+        // external database server is required (used by RefreshDatabase).
+        $app->config->set('database.default', 'sqlite');
+        $app->config->set('database.connections.sqlite.database', ':memory:');
+
         return $app;
     }
 }
