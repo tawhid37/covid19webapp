@@ -6,20 +6,23 @@
 
         <title>Self-Assessment Form</title>
 
-        <!-- Fonts -->
+        <!-- Google Fonts: Nunito 200, 300, 400, 600, 700 -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <link href="/css/main.css" rel="stylesheet">
+        <link href="/css/main.css?v={{ time() }}" rel="stylesheet">
     </head>
-    <body>
+    <body class="{{ Request::path() == '/' ? 'page-home' : 'page-inner' }}">
 
-       @yield('content')
+       <main class="site-main">
+           @yield('content')
+       </main>
 
-       <div class="footer">
+       <footer class="footer">
            <p>This COVID 19 Self Assessment System is only for software development purpose and may not yield actual result. Any information given by users of this system will not be disclosed or store to anywhere.</p>
-       </div>
+       </footer>
     
     </body>
 </html>
